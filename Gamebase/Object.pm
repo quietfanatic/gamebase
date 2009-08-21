@@ -6,7 +6,7 @@ class Gamebase::Object {
 	has $.w is rw = 1;
 	has $.h is rw = 1;
 	has $.color is rw = 0;
-	has $.xspeed is rw = 0;
+	has $.xspeed is rw = 0;  # should these be given to a Gamebase::Sprite class?
 	has $.yspeed is rw = 0;
 
 	 # multi methods cause "no candidates found for invoke()" error
@@ -23,8 +23,8 @@ class Gamebase::Object {
 			.isa($other) and self.coll($_)
 		}
 	}
-	 # Rectangle bouncing; does not account for motion.
-     # Call these after checking for collisions.
+	 # Rectangle bouncing; does not account for the motion of $other.
+	 # Call these after checking for collisions.
 	method bounce_top(Gamebase::Object $other) {
 		$.yspeed = -$.yspeed;
 		$.y = $other.y * 2 - ($.y + $.h) - $.h;
@@ -42,21 +42,20 @@ class Gamebase::Object {
 		$.x = ($other.x + $other.w) * 2 - $.x;
 	}
 	method bounce(Gamebase::Object $other) {
-		my $left_overlap = $.x + $.w - $other.x;
-		my $right_overlap = $other.x + $other.w - $.x;
-		my $top_overlap = $.y + $.h - $other.y;
-		my $bottom_overlap = $other.y + $other.h - $.y;
-		 # This algorithm prefers left and top when ambiguous.
-		if ($left_overlap <= $top_overlap & $bottom_overlap & $right_overlap) {
+		my $left = ($.x - $.xspeed) + $.w - $other.x;
+		my $right = $other.x + $other.w - ($.x - $.xspeed);
+		my $top = ($.y - $.yspeed) + $.h - $other.y;
+		my $bottom = $other.y + $other.h - ($.y - $.yspeed);
+		if ($left <= $top & $bottom & $right) {
 			self.bounce_left($other);
 		}
-		elsif ($right_overlap <= $top_overlap & $bottom_overlap) {
+		elsif ($right <= $top & $bottom) {
 			self.bounce_right($other);
 		}  # Can bounce off corners too.
-		if ($top_overlap <= $left_overlap & $right_overlap & $bottom_overlap) {
+		if ($top <= $left & $right & $bottom) {
 			self.bounce_top($other);
 		}
-		elsif ($bottom_overlap <= $left_overlap & $right_overlap) {
+		elsif ($bottom <= $left & $right) {
 			self.bounce_bottom($other);
 		}
 	}
