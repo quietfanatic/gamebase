@@ -1,0 +1,43 @@
+use SDL;
+use Gamebase;
+use Gamebase::Object;
+
+
+$Gamebase::Width = 640;
+$Gamebase::Height = 480;
+$Gamebase::Refresh_Back = 1;
+
+
+class Test_Object is Gamebase::Object {
+	method step {
+		$.y -= 2 if %Gamebase::Key_Press<273>;
+		$.y += 2 if %Gamebase::Key_Press<274>;
+		$.x += 3 if %Gamebase::Key_Press<275>;
+		$.x -= 3 if %Gamebase::Key_Press<276>;
+		Gamebase::quit if %Gamebase::Key_Press<27>;
+	}
+}
+
+
+my $test_obj = Test_Object.new(
+	x => 100,
+	y => 100,
+	w => 20,
+	h => 50,
+	color => rgb(128, 128, 128)
+);
+
+@Gamebase::Objects.push: $test_obj;
+Gamebase::play;
+
+
+
+
+
+
+
+
+
+
+
+

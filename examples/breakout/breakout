@@ -1,0 +1,29 @@
+BEGIN { 
+	@*INC = @*INC, "examples/breakout";
+};
+use Gamebase;
+use Paddle;
+use Ball;
+use Brick;
+
+$Gamebase::Refresh_Back = 1;
+$Gamebase::Width = 320;  # small screen size
+$Gamebase::Height = 240;
+$Gamebase::FPS = 30;
+$Gamebase::Title = "Gamebase Breakout";
+
+$*paddle = Paddle.new;
+$*ball = Ball.new;
+@Gamebase::Objects.push: $*paddle, $*ball;
+
+ # Rakudo is not ready for 60 bricks.  We'll start with 20. :)
+for 0..9 -> $x {
+	for 2..3 -> $y {
+		@Gamebase::Objects.push: Brick.new(x => $x*32, y => $y*12);
+	}
+}
+
+
+
+
+play;
