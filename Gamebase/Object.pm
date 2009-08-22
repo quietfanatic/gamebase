@@ -9,7 +9,6 @@ class Gamebase::Object {
 	has $.xspeed is rw = 0;  # should these be given to a Gamebase::Sprite class?
 	has $.yspeed is rw = 0;
 
-	 # multi methods cause "no candidates found for invoke()" error
 	method collision (Gamebase::Object $other) {
 		return 0 if $.x + $.w <= $other.x;
 		return 0 if $.y + $.h <= $other.y;
@@ -17,10 +16,9 @@ class Gamebase::Object {
 		return 0 if $.y >= $other.y + $other.h;
 		return 1
 	}
-	 # and this doesn't work at all...
-	method collision_class (Class $other) {
-		return @Gamebase::Objects.grep: {
-			.isa($other) and self.coll($_)
+	method collision_class (Gamebase::Object $other) {
+		return @Gamebase::Objects.first: {
+			.isa($other) and self.collision($_)
 		}
 	}
 	 # Rectangle bouncing; does not account for the motion of $other.
