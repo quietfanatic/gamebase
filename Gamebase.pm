@@ -13,13 +13,13 @@ our $All_Rect;
 our @Objects;
 our $FPS = 30;
 
-sub step {
+sub step () {
 	our @Objects;
 	for @Objects {
 		.?step;
 	}
 }
-sub draw {
+sub draw () {  # Perhaps draw should be a method on Gamebase::Object.
 	our $Window, $All_Rect, $Refresh_Back, @Objects, $Width, $Height;
 	state $r = SDL::Rect.new;
 	SDL::FillRect($Window, $All_Rect.Item, 0) if $Refresh_Back;
@@ -34,7 +34,7 @@ sub draw {
 	SDL::UpdateRect($Window, 0, 0, $Width, $Height);
 }
 
-sub play is export {
+sub play () is export {
 	our $Window, $All_Rect, $Width, $Height, $Window_Flags, @Key_Press, $FPS;
 	$All_Rect = SDL::Rect.new(w => $Width, h => $Height);
 	$Window = SDL::SetVideoMode($Width, $Height, 32, $Window_Flags);
@@ -64,13 +64,26 @@ sub play is export {
 	}
 }
 
-sub quit is export {
+sub quit () is export {
 	SDL::Quit;
 	exit;
 }
 
+sub register_object (::Gamebase::Object $new) {
+	our @Objects;
+	@Objects.push($new);
+}
 
-
-
-
+sub destroy is export (::Gamebase::Object $doomed) {
+	our @Objects;
+	for 0..@Objects {
+		if @Objects[$_] === $doomed {
+			splice @Objects, $_, 1;
+			return 1
+		}
+	}
+	 # Didn't find any
+	caller.warn: "Cannot destroy $doomed because it is not registered";
+	return Failure
+}
 

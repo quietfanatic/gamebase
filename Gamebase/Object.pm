@@ -9,6 +9,18 @@ class Gamebase::Object {
 	has $.xspeed is rw = 0;  # should these be given to a Gamebase::Sprite class?
 	has $.yspeed is rw = 0;
 
+	 # On creation register with Gamebase
+	method new (*%_) {
+		my $self = self.bless(*, |%_);
+		Gamebase::register_object($self);
+		return $self;
+	}
+
+	method destroy() {
+		Gamebase::destroy(self);
+	}
+	 
+	 # Rectangle collision detection
 	method collision (Gamebase::Object $other) {
 		return 0 if $.x + $.w <= $other.x;
 		return 0 if $.y + $.h <= $other.y;
@@ -16,6 +28,8 @@ class Gamebase::Object {
 		return 0 if $.y >= $other.y + $other.h;
 		return 1
 	}
+	 # This should be superseded by class methods or something.
+	 # Like maybe self.collision(Object.any), or Object.List
 	method collision_class (Gamebase::Object $other) {
 		return @Gamebase::Objects.first: {
 			.isa($other) and self.collision($_)
@@ -39,7 +53,7 @@ class Gamebase::Object {
 		$.xspeed = -$.xspeed;
 		$.x = ($other.x + $other.w) * 2 - $.x;
 	}
-	method bounce(Gamebase::Object $other) {
+	method bounce(Gamebase::Object $other) {  # This is not completely accurate
 		my $left = ($.x - $.xspeed) + $.w - $other.x;
 		my $right = $other.x + $other.w - ($.x - $.xspeed);
 		my $top = ($.y - $.yspeed) + $.h - $other.y;

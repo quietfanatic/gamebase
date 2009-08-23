@@ -7,10 +7,7 @@ class Brick is Gamebase::Object {
 	method step {
 		if self.collision($*ball) {
 			$*ball.bounce(self);
-			@Gamebase::Objects.pairs.grep: {
-				.value === self and @Gamebase::Objects.splice(.key, 1)
-			}
-			undefine self;
+			self.destroy;
 		}
 	}
 }
