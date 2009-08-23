@@ -15,22 +15,22 @@ class Paddle is Gamebase::Object {
 			if @Gamebase::Key_Press[276] {  # SDLK_LEFT
 				$.xspeed = 0
 			}
-			else {  # speed is 1, 2, 4, 4 ...
+			else {  # speed is 2, 5, 8, 8 ...
 				$.xspeed max= 0;
 				$.xspeed =
-				   $.xspeed == 0 ?? 1
-				!! $.xspeed == 1 ?? 2
-				!! $.xspeed == 2 ?? 4
-				!!                  4
+				   $.xspeed == 0 ?? 2
+				!! $.xspeed == 2 ?? 5
+				!! $.xspeed == 5 ?? 8
+				!!                  8
 			}
 		}
 		elsif @Gamebase::Key_Press[276] {  # SDLK_LEFT
 			$.xspeed min= 0;
 			$.xspeed =
-			   $.xspeed ==  0 ?? -1
-			!! $.xspeed == -1 ?? -2
-			!! $.xspeed == -2 ?? -4
-			!!                   -4
+			   $.xspeed ==  0 ?? -2
+			!! $.xspeed == -2 ?? -5
+			!! $.xspeed == -5 ?? -8
+			!!                   -8
 		}
 		else {
 			$.xspeed = 0
@@ -50,8 +50,8 @@ class Paddle is Gamebase::Object {
 			$*ball.y = $.y - 10;
 			if @Gamebase::Key_Press[273] {  # SDLK_UP
 				$*ball.live = 1;
-				$*ball.xspeed = 3;
-				$*ball.yspeed = -3;
+				$*ball.xspeed = 6;
+				$*ball.yspeed = -6;
 			}
 		}
 	}

@@ -9,7 +9,7 @@ use Brick;
 $Gamebase::Refresh_Back = 1;
 $Gamebase::Width = 320;  # small screen size
 $Gamebase::Height = 240;
-$Gamebase::FPS = 30;
+$Gamebase::FPS = 15;
 $Gamebase::Title = "Gamebase Breakout";
 
 $*paddle = Paddle.new;
