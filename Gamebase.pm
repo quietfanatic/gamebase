@@ -8,7 +8,7 @@ our $Width = 640;
 our $Height = 480;
 our $Window_Flags = 1;
 our Int @Key_Press;  # Rakudo doesn't yet understand "my @array[shape]"
-@Key_Press[299] = undef;  # So we preallocate manually
+@Key_Press[322] = undef;  # So we preallocate manually
 our $All_Rect;
 our @Objects;
 our $FPS = 30;
