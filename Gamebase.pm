@@ -22,14 +22,14 @@ sub step () {
 sub draw () {  # Perhaps draw should be a method on Gamebase::Object.
 	our $Window, $All_Rect, $Refresh_Back, @Objects, $Width, $Height;
 	state $r = SDL::Rect.new;
-	SDL::FillRect($Window, $All_Rect.Item, 0) if $Refresh_Back;
+	SDL::FillRect($Window, $All_Rect.raw, 0) if $Refresh_Back;
 	for @Objects {
 		next if .?invisible;
 		$r.x: .x;
 		$r.y: .y;
 		$r.w: .w;
 		$r.h: .h;
-		SDL::FillRect($Window, $r.Item, .color);
+		SDL::FillRect($Window, $r.raw, .color);
 	}
 	SDL::UpdateRect($Window, 0, 0, $Width, $Height);
 }

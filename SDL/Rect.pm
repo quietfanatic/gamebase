@@ -83,7 +83,7 @@ class SDL::Rect {
 			.return($I0)
 		};
 	}
-	method Item() {
+	method raw() {
 		return $!rect
 	}
 }
