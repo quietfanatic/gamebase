@@ -22,11 +22,12 @@ class Gamebase::Object {
 	 
 	 # Rectangle collision detection
 	method collision (Gamebase::Object $other) {
-		return 0 if $.x + $.w <= $other.x;
-		return 0 if $.y + $.h <= $other.y;
-		return 0 if $.x >= $other.x + $other.w;
-		return 0 if $.y >= $other.y + $other.h;
-		return 1
+		 # any() disappears inside junctions and is false otherwise.
+		return any() if $.x + $.w <= $other.x;
+		return any() if $.y + $.h <= $other.y;
+		return any() if $.x >= $other.x + $other.w;
+		return any() if $.y >= $other.y + $other.h;
+		return $other
 	}
 	 # This should be superseded by class methods or something.
 	 # Like maybe self.collision(Object.any), or Object.List
@@ -70,6 +71,16 @@ class Gamebase::Object {
 		elsif ($bottom <= $left & $right) {
 			self.bounce_bottom($other);
 		}
+	}
+
+	method _any() {
+		return any( Gamebase::objects_of_type(self) );
+	}
+	method _all() {
+		return all( Gamebase::objects_of_type(self) );
+	}
+	method _list() {
+		return Gamebase::objects_of_type(self);
 	}
 }
 

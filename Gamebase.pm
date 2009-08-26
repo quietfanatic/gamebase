@@ -74,6 +74,12 @@ sub register_object (::Gamebase::Object $new) {
 	@Objects.push($new);
 }
 
+sub objects_of_type is export (::Gamebase::Object $type) {
+	our @Objects;
+	return undef if defined $type;
+	return @Objects.grep($type);
+}
+
 sub destroy is export (::Gamebase::Object $doomed) {
 	our @Objects;
 	for 0..@Objects {
