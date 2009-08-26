@@ -37,9 +37,6 @@ Add a bunch of object utiliy functions.
   In particular, object-finding functions such as:
     nearest(Class), colliding_point(x, y), colliding_rect(x, y, w, h), etc.
 
-Figure out the pause that happens every quarter-second or so.
-  It may not be our fault, but it deserves inquiry.
-
 Add something like a Gamebase::Room class.
   Many games have something analagous to rooms, or at least collections of
   objects that are loaded and unloaded together.  Another purpose of this is for
@@ -56,5 +53,9 @@ Create more game examples.
 Think up a better name than Gamebase.
   I'd like something both generic-sounding and individual-sounding.  This may be
   impossible, but it's worth a try, isn't it?
+  Ideas so far:
+  PIE (Perl Interactive Entertainment)
+  PAGE (Perl-Actualized Gamee Engin)
+  and SixShooter.
 
 
