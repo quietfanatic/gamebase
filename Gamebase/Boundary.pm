@@ -1,6 +1,6 @@
-use Gamebase::Object;
+use Gamebase::Sprite;
 
-class Gamebase::Boundary is Gamebase::Object {
+class Gamebase::Boundary is Gamebase::Sprite {
 	method x () {
 		return $Gamebase::Width
 	}

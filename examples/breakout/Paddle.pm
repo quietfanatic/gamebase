@@ -1,8 +1,8 @@
 use SDL;
 use Gamebase;
-use Gamebase::Object;
+use Gamebase::Sprite;
 
-class Paddle is Gamebase::Object {
+class Paddle is Gamebase::Sprite {
 	has $.x is rw = 100;
 	has $.xspeed is rw = 0;
 	has $.y is rw = $Gamebase::Height - 20;

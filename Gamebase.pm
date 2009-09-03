@@ -19,9 +19,10 @@ sub step () {
 		.?step;
 	}
 }
-sub draw () {  # Perhaps draw should be a method on Gamebase::Object.
+sub draw () {  # Perhaps draw should be a method on Gamebase::Sprite.
 	our $Window, $All_Rect, $Refresh_Back, @Objects, $Width, $Height;
 	state $r = SDL::Rect.new;
+	state $sr = SDL::Rect.new(x => 0, y => 0);
 	SDL::FillRect($Window, $All_Rect.raw, 0) if $Refresh_Back;
 	for @Objects {
 		next if .?invisible;
@@ -29,7 +30,14 @@ sub draw () {  # Perhaps draw should be a method on Gamebase::Object.
 		$r.y: .y;
 		$r.w: .w;
 		$r.h: .h;
-		SDL::FillRect($Window, $r.raw, .color);
+		if defined .color {
+			SDL::FillRect($Window, $r.raw, .color);
+		}
+		if defined .surface {
+			$sr.w: .w;
+			$sr.h: .h;
+			SDL::BlitSurface(.surface.raw, $sr.raw, $Window, $r.raw);
+		}
 	}
 	SDL::UpdateRect($Window, 0, 0, $Width, $Height);
 }
@@ -69,18 +77,18 @@ sub quit () is export {
 	exit;
 }
 
-sub register_object (::Gamebase::Object $new) {
+sub register_object (::Gamebase::Sprite $new) {
 	our @Objects;
 	@Objects.push($new);
 }
 
-sub objects_of_type is export (::Gamebase::Object $type) {
+sub objects_of_type is export (::Gamebase::Sprite $type) {
 	our @Objects;
 	return undef if defined $type;
 	return @Objects.grep($type);
 }
 
-sub destroy is export (::Gamebase::Object $doomed) {
+sub destroy is export (::Gamebase::Sprite $doomed) {
 	our @Objects;
 	for 0..@Objects {
 		if @Objects[$_] === $doomed {

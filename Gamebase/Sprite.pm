@@ -5,8 +5,9 @@ class Gamebase::Sprite {
 	has $.y is rw = 0;
 	has $.w is rw = 1;
 	has $.h is rw = 1;
-	has $.color is rw = 0;
-	has $.xspeed is rw = 0;  # should these be given to a Gamebase::Sprite class?
+	has $.color is rw;
+	has $.surface is rw;
+	has $.xspeed is rw = 0;
 	has $.yspeed is rw = 0;
 
 	 # On creation register with Gamebase

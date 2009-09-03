@@ -3,6 +3,8 @@ module SDL;
 
 Q:PIR {
 	load_bytecode "SDL_.pir"
+	$P0 = get_hll_global ['SDL'], '_init_image'
+	$P0()
 };
 
 for <

@@ -1,6 +1,6 @@
 use SDL;
 
-class Brick is Gamebase::Object {
+class Brick is Gamebase::Sprite {
 	has $.w is rw = 32;
 	has $.h is rw = 12;
 	has $.color = rgb(128 + rand * 127, 128 + rand * 127, 128 + rand * 127);

@@ -1,17 +1,18 @@
 use SDL;
+use SDL::Surface;
 use Gamebase::Boundary;
 
-class Ball is Gamebase::Object {
+class Ball is Gamebase::Sprite {
 	has $.x is rw = 0;
 	has $.y is rw = 0;
 	has $.w is rw = 6;
 	has $.h is rw = 6;
 	has $.xspeed is rw = 0;
 	has $.yspeed is rw = 0;
-	has $.color = rgb(255, 255, 255);
+	has $.surface = SDL::Surface.new(image => 'examples/breakout/ball.png');
 	has $.live is rw = 0;
 	method step {
-		$.x += $.xspeed;  # Maybe this should be automatic for Gamebase::Objects.
+		$.x += $.xspeed;  # Maybe this should be automatic for Gamebase::Sprites.
 		$.y += $.yspeed;
 		if self.collision($*paddle) {
 			self.bounce($*paddle);

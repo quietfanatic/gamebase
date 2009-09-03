@@ -1,6 +1,6 @@
 use SDL;
 use Gamebase;
-use Gamebase::Object;
+use Gamebase::Sprite;
 
 
 $Gamebase::Width = 640;
@@ -8,7 +8,7 @@ $Gamebase::Height = 480;
 $Gamebase::Refresh_Back = 1;
 
 
-class Test_Object is Gamebase::Object {
+class Test_Object is Gamebase::Sprite {
 	method step {
 		$.y -= 2 if @Gamebase::Key_Press[273];
 		$.y += 2 if @Gamebase::Key_Press[274];
