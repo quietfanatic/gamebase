@@ -1,12 +1,11 @@
 
-### Currently just a colored rectangle.
 class Gamebase::Sprite {
 	has $.x is rw = 0;
 	has $.y is rw = 0;
 	has $.w is rw = 1;
 	has $.h is rw = 1;
-	has $.color is rw;
-	has $.surface is rw;
+	has $.color;
+	has $.surface;
 	has $.xspeed is rw = 0;
 	has $.yspeed is rw = 0;
 
