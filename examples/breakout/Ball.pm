@@ -7,8 +7,6 @@ class Ball is Gamebase::Sprite {
 	has $.y is rw = 0;
 	has $.w is rw = 6;
 	has $.h is rw = 6;
-	has $.xspeed is rw = 0;
-	has $.yspeed is rw = 0;
 	has $.surface = SDL::Surface.new(image => 'examples/breakout/ball.png');
 	has $.live is rw = 0;
 	method step {
@@ -16,7 +14,7 @@ class Ball is Gamebase::Sprite {
 		$.y += $.yspeed;
 		if self.collision($*paddle) {
 			self.bounce($*paddle);
-			$.xspeed += (truncate ($.x + $.w/2) - ($*paddle.x + $*paddle.w/2)) / 3;
+			$.xspeed += 0.0 + (($.x + $.w/2) - ($*paddle.x + $*paddle.w/2)) / 3;
 			$.xspeed max= -16;
 			$.xspeed min= 16;
 		}

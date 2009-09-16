@@ -12,8 +12,8 @@ $Gamebase::Height = 240;
 $Gamebase::FPS = 15;
 $Gamebase::Title = "Gamebase Breakout";
 
-$*paddle = Paddle.new;
-$*ball = Ball.new;
+my $*paddle = Paddle.new;
+my $*ball = Ball.new;
 
  # Rakudo is not ready for 60 bricks.  We'll start with 20. :)
 for 0..9 -> $x {

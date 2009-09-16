@@ -26,10 +26,10 @@ sub draw () {  # Perhaps draw should be a method on Gamebase::Sprite.
 	SDL::FillRect($Window, $All_Rect.raw, 0) if $Refresh_Back;
 	for @Objects {
 		next if .?invisible;
-		$r.x: .x;
-		$r.y: .y;
-		$r.w: .w;
-		$r.h: .h;
+		$r.x: truncate .x;
+		$r.y: truncate .y;
+		$r.w: truncate .w;
+		$r.h: truncate .h;
 		if defined .color {
 			SDL::FillRect($Window, $r.raw, .color);
 		}

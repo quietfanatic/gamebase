@@ -1,13 +1,13 @@
 
 class Gamebase::Sprite {
-	has $.x is rw = 0;
-	has $.y is rw = 0;
-	has $.w is rw = 1;
-	has $.h is rw = 1;
-	has $.color;
+	has Num $.x is rw = 0;
+	has Num $.y is rw = 0;
+	has Num $.w is rw = 1;
+	has Num $.h is rw = 1;
+	has Int $.color;
 	has $.surface;
-	has $.xspeed is rw = 0;
-	has $.yspeed is rw = 0;
+	has Num $.xspeed is rw = 0;
+	has Num $.yspeed is rw = 0;
 
 	 # On creation register with Gamebase
 	method new (*%_) {
