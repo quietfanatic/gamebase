@@ -4,34 +4,12 @@ Add constants.
   Do you know what %Key_Press<275> is?  I bet you'd know if it was
   %Key_Press{SDLK_RIGHT} instead.
 
-Add SDL Image support.
-  Colored rectangles can only go so far.  It'd probably be best to add a
-  Gamebase::Image class for maximal extensibility.
-
-Think about per-object event handling.
-  Ideally this would be something like:
-    multi method on_collision(Object_Class) { ... }
-  or even:
-    event on_collision(Object_Class) { ... }
-  but I'm too afraid of dealing with multi-methods for the former and custom
-  syntax for the latter.  I suppose it could be a macro or something like this:
-    event "collision(Object_Class)", { ... }
-  but that's just sugar.  The main problem is how to implement this.
-  Just having the game check each object for each possible event every frame is
-  too slow.  Perhaps we should create an object._step method that calls
-  object.step and checks all the events.  (In this case, step should be an
-  event whose condition is always true).  However, this forces objects to do
-  all their event processing at once--some events may be best performed at
-  different times, such as when the player presses a key, or just before the
-  object is drawn.
-
-Create an intelligent object registration system.
-  Right now the objects' z-index and turn order depend on the order they're
-  added.  Just a mundane array is not good enough if we are to sort for both.
-  We should probably register all objects when they are created and give them a
-  .active attribute.  Then they can be created inactive for future use, or
-  deactivated when leaving a room to temporarily remove them from play without
-  destroying them.
+Add more event types.
+  Include parametric events like collisions, which will require a bit more
+  coding.  Include a move event that is automatically called on
+  Gamebase::Sprites.  Also, the current event system could probable be
+  optimized a little better.  Perhaps we should split a Gamebase::Object
+  class back off of Gamebase::Sprite that doesn't have step and move events.
 
 Add a bunch of object utiliy functions.
   In particular, object-finding functions such as:
@@ -55,7 +33,7 @@ Think up a better name than Gamebase.
   impossible, but it's worth a try, isn't it?
   Ideas so far:
   PIE (Perl Interactive Entertainment)
-  PAGE (Perl-Actualized Gamee Engin)
+  PAGE (Perl-Actualized Game Engine)
   and SixShooter.
 
 

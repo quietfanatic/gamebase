@@ -1,5 +1,8 @@
+use Gamebase;
+use SDL;
 
 class Gamebase::Sprite {
+	has $.active is rw = 1;
 	has Num $.x is rw = 0;
 	has Num $.y is rw = 0;
 	has Num $.w is rw = 1;
@@ -8,16 +11,35 @@ class Gamebase::Sprite {
 	has $.surface;
 	has Num $.xspeed is rw = 0;
 	has Num $.yspeed is rw = 0;
+	has Int $.depth = 0;
+	
+	method step { ... }
+	method draw {
+		state $r = SDL::Rect.new;
+		state $sr = SDL::Rect.new(x => 0, y => 0);
+		$r.x: truncate $.x;
+		$r.y: truncate $.y;
+		$r.w: truncate $.w;
+		$r.h: truncate $.h;
+		if defined $.color {
+			SDL::FillRect($Gamebase::Window, $r.raw, $.color);
+		}
+		if defined $.surface {
+			$sr.w: $.w;
+			$sr.h: $.h;
+			SDL::BlitSurface($.surface.raw, $sr.raw, $Gamebase::Window, $r.raw);
+		}
+	}
 
 	 # On creation register with Gamebase
 	method new (*%_) {
 		my $self = self.bless(*, |%_);
-		Gamebase::register_object($self);
+		Gamebase::register_sprite($self);
 		return $self;
 	}
 
 	method destroy() {
-		Gamebase::destroy(self);
+		undefine self;  # I don't know if this is supposed to work but it seems to.
 	}
 	 
 	 # Rectangle collision detection
@@ -74,13 +96,15 @@ class Gamebase::Sprite {
 	}
 
 	method _any() {
-		return any( Gamebase::objects_of_type(self) );
+		return any( Gamebase::sprites_of_type(self) );
 	}
 	method _all() {
-		return all( Gamebase::objects_of_type(self) );
+		return all( Gamebase::sprites_of_type(self) );
 	}
 	method _list() {
-		return Gamebase::objects_of_type(self);
+		return Gamebase::sprites_of_type(self);
 	}
 }
+register_event Gamebase::Sprite, %Gamebase::EVENT_LOOKUP<step>;
+register_event Gamebase::Sprite, %Gamebase::EVENT_LOOKUP<draw>;
 
