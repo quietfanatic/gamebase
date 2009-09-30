@@ -15,35 +15,6 @@ our $FPS = 30;
 
 ### MAIN GAME LOOP
 
-sub step () {
-	our %of_class;
-	for (all_sprites) {  # rakudo thinks it's a sub for without the parens.
-		.?step if .?active;
-	}
-}
-sub draw () {  # Perhaps draw should be a method on Gamebase::Sprite.
-	our $Window, $All_Rect, $Refresh_Back, $Width, $Height;
-	state $r = SDL::Rect.new;
-	state $sr = SDL::Rect.new(x => 0, y => 0);
-	SDL::FillRect($Window, $All_Rect.raw, 0) if $Refresh_Back;
-	for (all_sprites) {
-		next unless .?active;
-		$r.x: truncate .x;
-		$r.y: truncate .y;
-		$r.w: truncate .w;
-		$r.h: truncate .h;
-		if defined .color {
-			SDL::FillRect($Window, $r.raw, .color);
-		}
-		if defined .surface {
-			$sr.w: .w;
-			$sr.h: .h;
-			SDL::BlitSurface(.surface.raw, $sr.raw, $Window, $r.raw);
-		}
-	}
-	SDL::UpdateRect($Window, 0, 0, $Width, $Height);
-}
-
 sub play () is export {
 	our $Window, $All_Rect, $Width, $Height, $Window_Flags, @Key_Press, $FPS, %EVENT_LOOKUP;
 	$All_Rect = SDL::Rect.new(w => $Width, h => $Height);
