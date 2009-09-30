@@ -9,7 +9,7 @@ class Paddle is Gamebase::Sprite {
 	has $.w is rw = 40;
 	has $.h is rw = 6;
 	has $.color = rgb(255, 255, 255);
-	method step {
+	method before_move {
 		 # set speed
 		if @Gamebase::Key_Press[275] {  # SDLK_RIGHT
 			if @Gamebase::Key_Press[276] {  # SDLK_LEFT
@@ -36,11 +36,6 @@ class Paddle is Gamebase::Sprite {
 			$.xspeed = 0
 		}
 
-		 # move
-		$.x += $.xspeed;
-		$.x max= 0;
-		$.x min= $Gamebase::Width - $.w;
-
 		 # quit on ESC
 		Gamebase::quit if @Gamebase::Key_Press[27];  # SDLK_ESCAPE
 
@@ -56,3 +51,4 @@ class Paddle is Gamebase::Sprite {
 		}
 	}
 }
+Gamebase::register_event Paddle, %Gamebase::EVENT_LOOKUP<before_move>;

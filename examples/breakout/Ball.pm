@@ -9,9 +9,7 @@ class Ball is Gamebase::Sprite {
 	has $.h is rw = 6;
 	has $.surface = SDL::Surface.new(image => 'examples/breakout/ball.png');
 	has $.live is rw = 0;
-	method step {
-		$.x += $.xspeed;  # Maybe this should be automatic for Gamebase::Sprites.
-		$.y += $.yspeed;
+	method after_move {
 		if self.collision($*paddle) {
 			self.bounce($*paddle);
 			$.xspeed += 0.0 + (($.x + $.w/2) - ($*paddle.x + $*paddle.w/2)) / 3;
@@ -34,3 +32,4 @@ class Ball is Gamebase::Sprite {
 		}
 	}
 }
+Gamebase::register_event Ball, %Gamebase::EVENT_LOOKUP<after_move>;

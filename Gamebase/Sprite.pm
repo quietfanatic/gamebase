@@ -13,7 +13,11 @@ class Gamebase::Sprite {
 	has Num $.yspeed is rw = 0;
 	has Int $.depth = 0;
 	
-	method step { ... }
+	 # Default events
+	method move {
+		$.x += $.xspeed;
+		$.y += $.yspeed;
+	}
 	method draw {
 		state $r = SDL::Rect.new;
 		state $sr = SDL::Rect.new(x => 0, y => 0);
@@ -105,6 +109,6 @@ class Gamebase::Sprite {
 		return Gamebase::sprites_of_type(self);
 	}
 }
-register_event Gamebase::Sprite, %Gamebase::EVENT_LOOKUP<step>;
+register_event Gamebase::Sprite, %Gamebase::EVENT_LOOKUP<move>;
 register_event Gamebase::Sprite, %Gamebase::EVENT_LOOKUP<draw>;
 

@@ -49,8 +49,8 @@ sub play () is export {
 	$All_Rect = SDL::Rect.new(w => $Width, h => $Height);
 	$Window = SDL::SetVideoMode($Width, $Height, 32, $Window_Flags);
 	my $sdlevent = SDL::Event.new;
-	$sdlevent.set(4, 0);
-	loop {
+	$sdlevent.set(4, 0);  # No mouse movement for now.
+	loop {  # main loop
 		while $sdlevent.poll {
 			given $sdlevent.type {
 				when 2 {  # key down
@@ -64,10 +64,13 @@ sub play () is export {
 				}
 			}
 		}
-		perform_event %EVENT_LOOKUP<step>;
+		perform_event %EVENT_LOOKUP<before_move>;
+		perform_event %EVENT_LOOKUP<move>;
+		perform_event %EVENT_LOOKUP<after_move>;
 		SDL::FillRect($Window, $All_Rect.raw, 0) if $Refresh_Back;
 		perform_event %EVENT_LOOKUP<draw>;
 		SDL::UpdateRect($Window, 0, 0, $Width, $Height);
+		perform_event %EVENT_LOOKUP<after_draw>;
 		state $ticks = 0;
 		state $oldticks = SDL::GetTicks;
 		$ticks = SDL::GetTicks;
@@ -135,8 +138,9 @@ sub destroy is export (::Gamebase::Sprite $doomed) {
 
 ### Events
 
-enum Gamebase::Event <step draw>;  # Enums are still kinda borken.
-our %EVENT_LOOKUP = enum <step draw>;  # so we need this.
+ # Enums are still kinda borken.
+enum Gamebase::Event <before_move move after_move draw after_draw>;
+our %EVENT_LOOKUP = enum <before_move move after_move draw after_draw>;
 
 
 our @Event_List;  # [Gamebase::Event] of Array of Gamebase::Sprite
@@ -144,6 +148,7 @@ our @Event_List;  # [Gamebase::Event] of Array of Gamebase::Sprite
 sub perform_event ($ev) {
 	our %of_class;
 	our @Event_List;
+	return unless defined @Event_List[$ev];
 	for @Event_List[$ev][] {
 		map_event %of_class{$_}, $ev;
 	}
@@ -155,8 +160,11 @@ sub map_event (@sprites, $ev) {
 		if $item ~~ Array { map_event $item, $ev; next };
 		next unless $item.active;
 		given $ev {
-			$item.step when 0;
-			$item.draw when 1;
+			$item.before_move when 0;
+			$item.move        when 1;
+			$item.after_move  when 2;
+			$item.draw        when 3;
+			$item.after_draw  when 4;
 		}
 	}
 }
