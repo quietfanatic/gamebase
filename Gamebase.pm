@@ -146,7 +146,7 @@ multi sub register_event is export ($type, $ev, :$target) {
 	 # If a parent already has this event, don't register for it.
 	if defined @Event_List[$ev] {
 		for $type.^parents {
-			return say "$ev already has a $type that is $_" if grep @Event_List[$ev], $_;
+			return if grep @Event_List[$ev], $_;
 		}
 	}
 	else {

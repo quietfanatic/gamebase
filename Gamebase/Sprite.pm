@@ -37,7 +37,7 @@ class Gamebase::Sprite {
 	method new (*%_) {
 		my $self = self.bless(*, |%_);
 		Gamebase::register_sprite($self);
-		return $self;
+		$self;
 	}
 
 	method destroy() {
@@ -46,11 +46,11 @@ class Gamebase::Sprite {
 	 
 	 # Rectangle collision detection
 	method collision (Gamebase::Sprite $other) {
-		return 0 if $.x + $.w <= $other.x;
-		return 0 if $.y + $.h <= $other.y;
-		return 0 if $.x >= $other.x + $other.w;
-		return 0 if $.y >= $other.y + $other.h;
-		return $other
+		if    $.x + $.w <= $other.x      { 0 }
+		elsif $.y + $.h <= $other.y      { 0 }
+		elsif $.x >= $other.x + $other.w { 0 }
+		elsif $.y >= $other.y + $other.h { 0 }
+		else { $other }
 	}
 	 # This should be superseded by class methods or something.
 	 # Like maybe self.collision(Object.any), or Object.List
