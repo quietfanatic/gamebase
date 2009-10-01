@@ -45,7 +45,7 @@ sub play () is export {
 		state $ticks = 0;
 		state $oldticks = SDL::GetTicks;
 		$ticks = SDL::GetTicks;
-		SDL::Delay 0 max truncate((1000 div $FPS) - ($ticks - $oldticks));
+		SDL::Delay 0 max truncate((1000 / $FPS) - ($ticks - $oldticks));
 		$oldticks = SDL::GetTicks;
 	}
 }

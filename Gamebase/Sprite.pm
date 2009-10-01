@@ -31,7 +31,7 @@ class Gamebase::Sprite {
 		if defined $.surface {
 			$sr.w: $.w;
 			$sr.h: $.h;
-			SDL::BlitSurface($.surface.raw, $sr.raw, $Gamebase::Window, $r.w);
+			SDL::BlitSurface($.surface.raw, $sr.raw, $Gamebase::Window, $r.raw);
 		}
 	}
 
@@ -48,16 +48,17 @@ class Gamebase::Sprite {
 	 
 	 # Rectangle collision detection
 	method collision (Gamebase::Sprite $other) {
-		return 0 if $.x + $.w <= $other.x;
-		return 0 if $.y + $.h <= $other.y;
-		return 0 if $.x >= $other.x + $other.w;
-		return 0 if $.y >= $other.y + $other.h;
+		 # any() disappears inside junctions and is false otherwise.
+		return any() if $.x + $.w <= $other.x;
+		return any() if $.y + $.h <= $other.y;
+		return any() if $.x >= $other.x + $other.w;
+		return any() if $.y >= $other.y + $other.h;
 		return $other
 	}
-	 # Maybe this should be superseded by class methods or something.
-	 # Like self.collision(Object.any), or Object.List
+	 # This should be superseded by class methods or something.
+	 # Like maybe self.collision(Object.any), or Object.List
 	method collision_class (Gamebase::Sprite $other) {
-		return @Gamebase::Sprites.grep: {
+		return @Gamebase::Sprites.first: {
 			.isa($other) and self.collision($_)
 		}
 	}
