@@ -5,8 +5,8 @@ class Gamebase::Sprite {
 	has $.active is rw = 1;
 	has Num $.x is rw = 0;
 	has Num $.y is rw = 0;
-	has Num $.w is rw = 1;
-	has Num $.h is rw = 1;
+	has Num $.w;
+	has Num $.h;
 	has Int $.color;
 	has $.surface;
 	has Num $.xspeed is rw = 0;
@@ -20,7 +20,7 @@ class Gamebase::Sprite {
 	}
 	method draw {
 		state $r = SDL::Rect.new;
-		state $sr = SDL::Rect.new(x => 0, y => 0);
+		state $sr = SDL::Rect.new(x => 0, y => 0, w => $.w, h => $.h);
 		$r.x: truncate $.x;
 		$r.y: truncate $.y;
 		$r.w: truncate $.w;
@@ -29,8 +29,6 @@ class Gamebase::Sprite {
 			SDL::FillRect($Gamebase::Window, $r.raw, $.color);
 		}
 		if defined $.surface {
-			$sr.w: $.w;
-			$sr.h: $.h;
 			SDL::BlitSurface($.surface.raw, $sr.raw, $Gamebase::Window, $r.raw);
 		}
 	}
