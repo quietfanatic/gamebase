@@ -3,7 +3,7 @@ use Gamebase;
 use Gamebase::Sprite;
 
 class Paddle is Gamebase::Sprite {
-	has $.x is rw = 100;
+	has $.x is rw = 140;
 	has $.xspeed is rw = 0;
 	has $.y is rw = $Gamebase::Height - 20;
 	has $.w is rw = 40;

@@ -48,7 +48,6 @@ class Gamebase::Sprite {
 	 
 	 # Rectangle collision detection
 	method collision (Gamebase::Sprite $other) {
-		 # any() disappears inside junctions and is false otherwise.
 		return 0 if $.x + $.w <= $other.x;
 		return 0 if $.y + $.h <= $other.y;
 		return 0 if $.x >= $other.x + $other.w;
@@ -81,17 +80,17 @@ class Gamebase::Sprite {
 		$.x = ($other.x + $other.w) * 2 - $.x;
 	}
 	method bounce(Gamebase::Sprite $other) {  # This is not completely accurate
-		my $left = ($.x - $.xspeed) + $.w - $other.x;
-		my $right = $other.x + $other.w - ($.x - $.xspeed);
-		my $top = ($.y - $.yspeed) + $.h - $other.y;
-		my $bottom = $other.y + $other.h - ($.y - $.yspeed);
-		if ($left <= $top & $bottom & $right) {
+		my $left   = $.xspeed > 0 ?? $.x      + $.w      - $other.x !! Inf;
+		my $right  = $.xspeed < 0 ?? $other.x + $other.w - $.x      !! Inf;
+		my $top    = $.yspeed > 0 ?? $.y      + $.h      - $other.y !! Inf;
+		my $bottom = $.yspeed < 0 ?? $other.y + $other.h - $.y      !! Inf;
+		if ($left <= $top & $bottom) {
 			self.bounce_left($other);
 		}
 		elsif ($right <= $top & $bottom) {
 			self.bounce_right($other);
 		}  # Can bounce off corners too.
-		if ($top <= $left & $right & $bottom) {
+		if ($top <= $left & $right) {
 			self.bounce_top($other);
 		}
 		elsif ($bottom <= $left & $right) {
