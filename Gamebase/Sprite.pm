@@ -49,10 +49,10 @@ class Gamebase::Sprite {
 	 # Rectangle collision detection
 	method collision (Gamebase::Sprite $other) {
 		 # any() disappears inside junctions and is false otherwise.
-		return any() if $.x + $.w <= $other.x;
-		return any() if $.y + $.h <= $other.y;
-		return any() if $.x >= $other.x + $other.w;
-		return any() if $.y >= $other.y + $other.h;
+		return 0 if $.x + $.w <= $other.x;
+		return 0 if $.y + $.h <= $other.y;
+		return 0 if $.x >= $other.x + $other.w;
+		return 0 if $.y >= $other.y + $other.h;
 		return $other
 	}
 	 # This should be superseded by class methods or something.
