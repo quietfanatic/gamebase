@@ -12,31 +12,47 @@ class Gamebase::Sprite {
 	has Num $.xspeed is rw = 0;
 	has Num $.yspeed is rw = 0;
 	has Int $.depth = 0;
-	
+
+	method event ($self where undef: &method) {
+		Gamebase::register_event($self, &method);
+	}
 	 # Default events
-	method move {
+	Gamebase::Sprite.event: method move {
 		$.x += $.xspeed;
 		$.y += $.yspeed;
 	}
 	has $!R;
 	has $!SR;
-	method draw {
+	Gamebase::Sprite.event: method draw {
 		$!R //= SDL::Rect.new(w => $.w, h => $.h);
 		$!SR //= SDL::Rect.new(x => 0, y => 0, w => $.w, h => $.h);
-		my $x = truncate $.x;
-		my $y = truncate $.y;
+		my $intx = truncate $.x;
+		my $inty = truncate $.y;
 		my $RECT := $!R.raw;
 		Q:PIR {  # Inline this process for speed
 			$P0 = find_lex '$RECT'
-			$P1 = find_lex '$x'
+			$P1 = find_lex '$intx'
 			$I0 = $P1
 			$P0['x'] = $I0
-			$P1 = find_lex '$y'
+			$P1 = find_lex '$inty'
 			$I0 = $P1
 			$P0['y'] = $I0
 		};
 		if defined $.color {
 			SDL::FillRect($Gamebase::Window, $!R.raw, $.color);
+			 # Due to a feature of FillRect, $!R.w and $!R.h get clipped.
+			 # Most Gamebase users will not expect this.
+			my $intw = truncate $.w;
+			my $inth = truncate $.h;
+			Q:PIR {  # Inlined for speed
+				$P0 = find_lex '$RECT'
+				$P1 = find_lex '$intw'
+				$I0 = $P1
+				$P0['width'] = $I0
+				$P1 = find_lex '$inth'
+				$I0 = $P1
+				$P0['height'] = $I0
+			};
 		}
 		if defined $.surface {
 			SDL::BlitSurface($.surface.raw, $!SR.raw, $Gamebase::Window, $!R.raw);
@@ -116,6 +132,3 @@ class Gamebase::Sprite {
 		return Gamebase::sprites_of_type(self);
 	}
 }
-register_event Gamebase::Sprite, %Gamebase::EVENT_LOOKUP<move>;
-register_event Gamebase::Sprite, %Gamebase::EVENT_LOOKUP<draw>;
-

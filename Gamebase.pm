@@ -140,9 +140,9 @@ sub map_event (@sprites, $ev) {
 	}
 }
 
-# Until we can do declarative syntax we have to stick with procedural
-multi sub register_event is export ($type, $ev, :$target) {
+multi sub register_event is export ($type, &method) {
 	our @Event_List;
+	my $ev = %EVENT_LOOKUP{&method.name};
 	 # If a parent already has this event, don't register for it.
 	if defined @Event_List[$ev] {
 		for $type.^parents {
