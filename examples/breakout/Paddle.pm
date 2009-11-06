@@ -49,5 +49,7 @@ class Paddle is Gamebase::Sprite {
 				$*ball.yspeed = -6;
 			}
 		}
+		$.x max= 0 - $.xspeed;
+		$.x min= $Gamebase::Width - $.xspeed - $.w;
 	}
 }
