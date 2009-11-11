@@ -38,6 +38,13 @@ class Paddle is Gamebase::Sprite {
 
 		 # quit on ESC
 		Gamebase::quit if @Gamebase::Key_Press[27];  # SDLK_ESCAPE
+	}
+
+	Paddle.event: method after_move {
+
+		 # constrain to sides
+		$.x max= 0;
+		$.x min= $Gamebase::Width - $.w;
 
 		 # launch ball
 		unless $*ball.live {
@@ -49,7 +56,5 @@ class Paddle is Gamebase::Sprite {
 				$*ball.yspeed = -6;
 			}
 		}
-		$.x max= 0 - $.xspeed;
-		$.x min= $Gamebase::Width - $.xspeed - $.w;
 	}
 }
