@@ -56,63 +56,12 @@ sub quit () is export {
 }
 
 
-### REGISTRY
-our %of_class;  # of Array of Array
-%of_class<Gamebase::Sprite()> = [[]];  # otherwise we recurse all the way to Object()
- # Each entry is sorted by class, and consists of an array of arrays,
- # the first of which is the objects of that immediate type,
- # and the rest of which are the entries for inheriting types.
 
-sub register_sprite (::Gamebase::Sprite $new) {
-	our %of_class;
-	my $what = $new.WHAT;
-	unless %of_class.exists($what) {  # Never seen this class before
-		%of_class{$what} = [[]];
-		for $new.^parents(:local) -> $parent {  # Only immediate parents
-			%of_class{$parent} //= [[]];  # Haven't seen parent either
-			%of_class{$parent}.push: undef;
-			%of_class{$parent}[*-1] = %of_class{$what};  # Ought to recurse
-		}
-	}
-	add %of_class{$what}[0], $new;
-}
-
-sub add (@registry, $new) {
-	for @registry {
-		defined $_ || return ($_ = $new);
-	}
-	@registry.push: $new;
-}
-
-sub flatten ($piece) {  # Rakudo can't map with multis.
-	if $piece ~~ Array { map &flatten, $piece.values.grep({defined $_}) }
-	else { $piece }
-}
-
-sub for_all_sprites (&code) {
-
-}
-
-sub all_sprites {
-	sprites_of_type(::Gamebase::Sprite);
-}
-
-sub sprites_of_type is export (::Gamebase::Sprite $type where undef) {
-	 # %Class{$type}<all_instances> will have been set up for us.
-	flatten %Gamebase::Sprite::Class{$type.perl}<all_instances>[]
-}
-
-sub destroy is export (::Gamebase::Sprite $doomed) {
-	$doomed.destroy;
-}
-
-
-### Events
+### EVENTS
 
  # Enums are still kinda borken.
 enum Gamebase::Event <before_move move after_move draw after_draw>;
 our %EVENT_LOOKUP = enum <before_move move after_move draw after_draw>;
-
 
 our @Event_List;  # [Gamebase::Event] of Array of Gamebase::Sprite
 

@@ -18,7 +18,7 @@ class Gamebase::Sprite {
 	 # %Class<Sprite><all_instances> is an array of arrays for fast iteration,
 	 # as in the old %of_class.  The first element =:= .<instances> and the
 	 # rest =:= the .<all_instances> of the child classes. 
-	our %Class = 'Gamebase::Sprite' => {children => [], instances => [], events => {}, all_instances => [[]]};
+	our %Class = 'Gamebase::Sprite' => {children => [], instances => [], events => [], all_instances => [[]]};
 
 	 # workaround until we get a proper subclassing hook
 	method inherit_from (Gamebase::Sprite $parent) is export {
@@ -39,12 +39,26 @@ class Gamebase::Sprite {
 		Gamebase::register_event($CURRENTLY_DEFINING, &method);
 	}
 
-	 # Default events
+### Object creation and destruction
+
+	method new (*%_) {
+		my $self = self.bless(*, |%_);
+		push %Class{self.perl}<instances>, $self;
+		$self;
+	}
+
+	method destroy() {
+		undefine self;  # I don't know if this is supposed to work but it seems to.
+	}
+
+### Default events (move and draw)
+
 	event method move {
 		$.x += $.xspeed;
 		$.y += $.yspeed;
 	}
-	has $!R;
+
+	has $!R;  # Unfortunately draw is kinda non-portable right now.
 	has $!SR;
 	event method draw {
 		$!R //= SDL::Rect.new(w => $.w, h => $.h);
@@ -82,20 +96,11 @@ class Gamebase::Sprite {
 		}
 	}
 
-	 # On creation register with Gamebase
-	method new (*%_) {
-		my $self = self.bless(*, |%_);
-		Gamebase::register_sprite($self);
-		 # Register ourselves
-		push %Class{self.perl}<instances>, $self;
-		$self;
-	}
 
-	method destroy() {
-		undefine self;  # I don't know if this is supposed to work but it seems to.
-	}
-	 
+### Utility methods
+
 	 # Rectangle collision detection
+	 # WARNING: the name "collision" is about to be stolen as an event type
 	method collision (Gamebase::Sprite $other) {
 		if    $.x + $.w <= $other.x      { 0 }
 		elsif $.y + $.h <= $other.y      { 0 }
@@ -146,6 +151,7 @@ class Gamebase::Sprite {
 			self.bounce_bottom($other);
 		}
 	}
+
 
 	method _any() {
 		return any( Gamebase::sprites_of_type(self) );
