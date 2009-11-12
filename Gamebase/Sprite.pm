@@ -18,12 +18,10 @@ class Gamebase::Sprite {
 
 	 # workaround until we get a proper subclassing hook
 	method inherit_from (Gamebase::Sprite $parent) is export {
-		say self ~ " inheriting from $parent";
 		$Gamebase::Sprite::CURRENTLY_DEFINING = self;
 		%Gamebase::Sprite::Class{self.WHAT.perl} = hash %Gamebase::Sprite::CLASS_DATA{$parent.WHAT.perl}.pairs;
 	}
 	sub event (&method) is export {
-		say "event $Gamebase::Sprite::CURRENTLY_DEFINING, " ~ &method;
 		Gamebase::register_event($Gamebase::Sprite::CURRENTLY_DEFINING, &method);
 	}
 
