@@ -98,8 +98,8 @@ sub all_sprites {
 }
 
 sub sprites_of_type is export (::Gamebase::Sprite $type where undef) {
-	our %of_class;
-	return flatten %of_class{$type};  # flatten?
+	 # %Class{$type}<all_instances> will have been set up for us.
+	flatten %Gamebase::Sprite::Class{$type.perl}<all_instances>[]
 }
 
 sub destroy is export (::Gamebase::Sprite $doomed) {
@@ -121,14 +121,14 @@ sub perform_event ($ev) {
 	our @Event_List;
 	return unless defined @Event_List[$ev];
 	for @Event_List[$ev][] {
-		map_event %of_class{$_}, $ev;
+		map_event %Gamebase::Sprite::Class{$_.perl}<all_instances>, $ev;
 	}
 }
 
 sub map_event (@sprites, $ev) {
 	for @sprites -> $item {
 		next unless defined $item;
-		if $item ~~ Array { map_event $item, $ev; next };
+		if $item ~~ Array { map_event $item, $ev; next }
 		next unless $item.active;
 		given $ev {
 			$item.before_move when 0;

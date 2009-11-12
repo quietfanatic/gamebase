@@ -12,17 +12,31 @@ class Gamebase::Sprite {
 	has Num $.xspeed is rw = 0;
 	has Num $.yspeed is rw = 0;
 	has Int $.depth = 0;
+	
+	our $CURRENTLY_DEFINING = Gamebase::Sprite;
 
-	$Gamebase::Sprite::CURRENTLY_DEFINING = Gamebase::Sprite;
-	%Gamebase::Sprite::Class<Gamebase::Sprite> = {children => {}, instances => {}}
+	 # %Class<Sprite><all_instances> is an array of arrays for fast iteration,
+	 # as in the old %of_class.  The first element =:= .<instances> and the
+	 # rest =:= the .<all_instances> of the child classes. 
+	our %Class = 'Gamebase::Sprite' => {children => [], instances => [], events => {}, all_instances => [[]]};
 
 	 # workaround until we get a proper subclassing hook
 	method inherit_from (Gamebase::Sprite $parent) is export {
-		$Gamebase::Sprite::CURRENTLY_DEFINING = self;
-		%Gamebase::Sprite::Class{self.WHAT.perl} = hash %Gamebase::Sprite::CLASS_DATA{$parent.WHAT.perl}.pairs;
+		$CURRENTLY_DEFINING = self;
+		 # Inherit events only
+		my $inst = [];
+		%Class{self.perl} = hash (
+			children => [],
+			instances => $inst,
+			all_instances => [$inst],
+			events => hash(%Class{$parent.perl}<events>.pairs)
+		);
+		push %Class{$parent.perl}<children>, self;
+		 # Add (a reference of) our all_instances to our parent's all_instances
+		push %Class{$parent.perl}<all_instances>, %Class{self.perl}<all_instances>;
 	}
 	sub event (&method) is export {
-		Gamebase::register_event($Gamebase::Sprite::CURRENTLY_DEFINING, &method);
+		Gamebase::register_event($CURRENTLY_DEFINING, &method);
 	}
 
 	 # Default events
@@ -49,8 +63,8 @@ class Gamebase::Sprite {
 		};
 		if defined $.color {
 			SDL::FillRect($Gamebase::Window, $!R.raw, $.color);
-			 # Due to a feature of FillRect, $!R.w and $!R.h get clipped.
-			 # Most Gamebase users will not expect this.
+			 # Due to a feature of FillRect, $!R gets clipped to the screen
+			 # Probably most Gamebase users will not expect this.
 			my $intw = truncate $.w;
 			my $inth = truncate $.h;
 			Q:PIR {  # Inlined for speed
@@ -72,6 +86,8 @@ class Gamebase::Sprite {
 	method new (*%_) {
 		my $self = self.bless(*, |%_);
 		Gamebase::register_sprite($self);
+		 # Register ourselves
+		push %Class{self.perl}<instances>, $self;
 		$self;
 	}
 
