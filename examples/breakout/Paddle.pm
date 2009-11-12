@@ -3,13 +3,16 @@ use Gamebase;
 use Gamebase::Sprite;
 
 class Paddle is Gamebase::Sprite {
+	say 1;
+	Paddle.inherit_from(Gamebase::Sprite);
+	say 2;
 	has $.x is rw = 140;
 	has $.xspeed is rw = 0;
 	has $.y is rw = $Gamebase::Height - 20;
 	has $.w is rw = 40;
 	has $.h is rw = 6;
 	has $.color = rgb(255, 255, 255);
-	Paddle.event: method before_move {
+	event method before_move {
 		 # set speed
 		if @Gamebase::Key_Press[275] {  # SDLK_RIGHT
 			if @Gamebase::Key_Press[276] {  # SDLK_LEFT
@@ -40,7 +43,7 @@ class Paddle is Gamebase::Sprite {
 		Gamebase::quit if @Gamebase::Key_Press[27];  # SDLK_ESCAPE
 	}
 
-	Paddle.event: method after_move {
+	event method after_move {
 
 		 # constrain to sides
 		$.x max= 0;

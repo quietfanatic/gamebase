@@ -13,17 +13,28 @@ class Gamebase::Sprite {
 	has Num $.yspeed is rw = 0;
 	has Int $.depth = 0;
 
-	method event ($self where undef: &method) {
-		Gamebase::register_event($self, &method);
+	$Gamebase::Sprite::CURRENTLY_DEFINING = Gamebase::Sprite;
+	%Gamebase::Sprite::Class<Gamebase::Sprite> = {children => {}, instances => {}}
+
+	 # workaround until we get a proper subclassing hook
+	method inherit_from (Gamebase::Sprite $parent) is export {
+		say self ~ " inheriting from $parent";
+		$Gamebase::Sprite::CURRENTLY_DEFINING = self;
+		%Gamebase::Sprite::Class{self.WHAT.perl} = hash %Gamebase::Sprite::CLASS_DATA{$parent.WHAT.perl}.pairs;
 	}
+	sub event (&method) is export {
+		say "event $Gamebase::Sprite::CURRENTLY_DEFINING, " ~ &method;
+		Gamebase::register_event($Gamebase::Sprite::CURRENTLY_DEFINING, &method);
+	}
+
 	 # Default events
-	Gamebase::Sprite.event: method move {
+	event method move {
 		$.x += $.xspeed;
 		$.y += $.yspeed;
 	}
 	has $!R;
 	has $!SR;
-	Gamebase::Sprite.event: method draw {
+	event method draw {
 		$!R //= SDL::Rect.new(w => $.w, h => $.h);
 		$!SR //= SDL::Rect.new(x => 0, y => 0, w => $.w, h => $.h);
 		my $intx = truncate $.x;
@@ -79,7 +90,7 @@ class Gamebase::Sprite {
 		else { $other }
 	}
 	 # This should be superseded by class methods or something.
-	 # Like maybe self.collision(Object.any), or Object.List
+	 # Like maybe self.collision(Sprite.any), or Sprite.List
 	method collision_class (Gamebase::Sprite $other) {
 		return @Gamebase::Sprites.first: {
 			.isa($other) and self.collision($_)

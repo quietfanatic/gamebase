@@ -152,5 +152,6 @@ multi sub register_event is export ($type, &method) {
 	else {
 		@Event_List[$ev] = [];
 	}
+	say "Registering event {&method.name} for class $type";
 	@Event_List[$ev].push: $type;
 }

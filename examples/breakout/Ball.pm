@@ -3,13 +3,14 @@ use SDL::Surface;
 use Gamebase::Boundary;
 
 class Ball is Gamebase::Sprite {
+	Ball.inherit_from(Gamebase::Sprite);
 	has $.x is rw = 0;
 	has $.y is rw = 0;
 	has $.w is rw = 6;
 	has $.h is rw = 6;
 	has $.surface = SDL::Surface.new(image => 'examples/breakout/ball.png');
 	has $.live is rw = 0;
-	Ball.event: method after_move {
+	event method after_move {
 		if self.collision($*paddle) {
 			self.bounce($*paddle);
 			$.xspeed += 0.0 + (($.x + $.w/2) - ($*paddle.x + $*paddle.w/2)) / 3;

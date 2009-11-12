@@ -1,6 +1,7 @@
 use Gamebase::Sprite;
 
 class Gamebase::Boundary is Gamebase::Sprite {
+	Gamebase::Boundary.inherit_from(Gamebase::Sprite);
 	method x () {
 		return $Gamebase::Width
 	}
