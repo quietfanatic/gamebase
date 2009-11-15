@@ -89,7 +89,7 @@ sub map_event (@sprites, $ev) {
 	}
 }
 
-multi sub register_event is export ($type, &method) {
+sub register_event is export ($type, &method) {
 	our @Event_List;
 	my $ev = %EVENT_LOOKUP{&method.name};
 	 # If a parent already has this event, don't register for it.
